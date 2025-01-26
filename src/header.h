@@ -22,11 +22,9 @@ struct Record
     struct Date withdraw;
 };
 
-struct User
-{
+struct User{
     int id;
-    char name[50];
-    char password[50];
+    char name[50];    char password[50];
 };
 
 // authentication functions
@@ -38,3 +36,5 @@ const char *getPassword(struct User u);
 void createNewAcc(struct User u);
 void mainMenu(struct User u);
 void checkAllAccounts(struct User u);
+int checkUserExist(char a[50]);
+void getName(struct User *u);
