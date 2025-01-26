@@ -22,6 +22,7 @@ void mainMenu(struct User u)
         createNewAcc(u);
         break;
     case 2:
+        
         // student TODO : add your **Update account information** function
         // here
         break;
@@ -81,8 +82,13 @@ void initMenu(struct User *u)
             r = 1;
             break;
         case 2:
-            // student TODO : add your **Registration** function
-            // here
+            registerMenu(u->name, u->password);
+            if(!checkUserExist(u->name)) {
+                getName(u);
+                printf("\n\nRegisteration passed successfully");
+            }else {
+                printf("\nUser already exists!!!\n");
+            }
             r = 1;
             break;
         case 3:
