@@ -38,3 +38,6 @@ void mainMenu(struct User u);
 void checkAllAccounts(struct User u);
 int checkUserExist(char a[50]);
 void getName(struct User *u);
+void updateAccountInformation(struct User u);
+int getDataUserFromFile(FILE *fp, struct Record *r);
+void saveUpdatedDataToFile(FILE *fp, struct User u, struct Record r);

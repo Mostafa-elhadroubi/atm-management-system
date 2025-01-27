@@ -73,10 +73,10 @@ void stayOrReturn(int notGood, void f(struct User u), struct User u)
     }
 }
 
-void success(struct User u)
+void success(struct User u, const char *res)
 {
     int option;
-    printf("\n✔ Success!\n\n");
+    printf("\n✔ %s!\n\n", res);
 invalid:
     printf("Enter 1 to go to the main menu and 0 to exit!\n");
     scanf("%d", &option);
@@ -101,7 +101,7 @@ void createNewAcc(struct User u)
     struct Record r;
     struct Record cr;
     char userName[50];
-    FILE *pf = fopen(RECORDS, "a+");
+    FILE *pf = fopen(RECORDS, "r+");
 
 noAccount:
     system("clear");
@@ -132,7 +132,7 @@ noAccount:
     saveAccountToFile(pf, u, r);
 
     fclose(pf);
-    success(u);
+    success(u, "Success");
 }
 
 void checkAllAccounts(struct User u)
@@ -161,5 +161,81 @@ void checkAllAccounts(struct User u)
         }
     }
     fclose(pf);
-    success(u);
+    success(u, "Success");
+}
+
+
+void updateAccountInformation(struct User u) {
+    struct Record r;
+    int accountId;
+    FILE *fp = fopen(RECORDS, "r+");  // Open for reading and updating
+    FILE *tempFp = fopen("./data/tempfile.txt", "w+");  // Temp file for writing updated data
+
+    if (fp == NULL || tempFp == NULL) {
+        printf("Error opening file.\n");
+        return;
+    }
+
+    system("clear");
+    printf("\t\t\t ====== Update your Account: ======\n\n");
+    printf("Enter your account id:");
+    scanf("%d", &accountId);
+
+    int found = 0;
+    while (getDataUserFromFile(fp, &r) != EOF) {
+        if (strcmp(r.name, u.name) == 0 && r.accountNbr == accountId) {
+            found = 1;
+            int option;
+            invalidUpdate:
+            system("clear");
+            printf("\t\t\tWhat do you want to change:\n\n");
+            printf("\n\t\t[1]- Phone Number\n");
+            printf("\n\t\t[2]- Country\n");
+            scanf("%d", &option);
+            switch (option) {
+                case 1:
+                    printf("\n\t\tEnter your new phone number:");
+                    scanf("%d", &r.phone);
+                    break;
+                case 2:
+                    printf("\n\t\tEnter your new country:");
+                    scanf("%s", r.country);
+                    break;
+                default:
+                    printf("Insert a valid operation!\n");
+                    goto invalidUpdate;
+            }
+            // Write the updated record to the temp file
+            saveUpdatedDataToFile(tempFp, u, r);
+        } else {
+            // Write unchanged record to the temp file
+            saveUpdatedDataToFile(tempFp, u, r);
+        }
+    }
+
+
+    fclose(fp);
+    fclose(tempFp);
+
+    // Replace the original file with the updated temporary file
+    remove(RECORDS);  // Remove the original file
+    rename("./data/tempfile.txt", RECORDS);  // Rename temp file to original file name
+    if (!found) {
+        system("clear");
+        printf("Account does not exist!!\n");
+        success(u, "Failed");
+    } else {
+    success(u, "Success");
+    }
+}
+
+int getDataUserFromFile(FILE *fp, struct Record *r) {
+    return fscanf(fp, "%d %d %s %d %d/%d/%d %s %d %lf %s",
+    &r->id, &r->userId, r->name, &r->accountNbr, &r->deposit.month,
+    &r->deposit.day, &r->deposit.year, r->country, &r->phone, &r->amount, r->accountType) ;
+}
+void saveUpdatedDataToFile(FILE *fp, struct User u, struct Record r) {
+    fprintf(fp, "%d %d %s %d %d/%d/%d %s %d %.2lf %s\n\n",
+    r.id, r.userId, u.name, r.accountNbr, r.deposit.month,
+    r.deposit.day, r.deposit.year, r.country, r.phone, r.amount, r.accountType);
 }
