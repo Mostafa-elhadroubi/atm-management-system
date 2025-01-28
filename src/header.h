@@ -46,3 +46,5 @@ void saveUpdatedDataToFile(FILE *fp, struct User u, struct Record r);
 
 void checkAccountInformation(struct User u);
 void accountInformation(struct Record r);
+
+void RemoveAccount(struct User u);
