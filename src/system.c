@@ -320,7 +320,7 @@ void withdrawAmount(struct User u, int option){
     FILE *fptemp = fopen("./data/tempFile.txt", "w");
     struct Record r;
     int accountID;
-    int amount;
+    float amount;
     int found = 0;
     int invalid = 0;
     printf("Enter your account ID to withdraw from:");
@@ -329,7 +329,7 @@ void withdrawAmount(struct User u, int option){
         if(strcmp(u.name, r.name) == 0 && r.accountNbr == accountID)  {
             found = 1;
             printf("Enter the amount to withdraw: $");
-            scanf("%d", &amount);
+            scanf("%f", &amount);
             if (r.amount >= amount){
                 if ((strcmp(r.accountType, "current") == 0 || strcmp(r.accountType, "saving") == 0)) {
                 r.amount -= amount;
@@ -367,7 +367,7 @@ void depositAmount(struct User u, int option){
     FILE *fptemp = fopen("./data/tempFile.txt", "w");
     struct Record r;
     int accountID;
-    int amount;
+    float amount;
     int found = 0;
     int invalid = 0;
     printf("Enter your account ID to deposit into:");
@@ -376,7 +376,7 @@ void depositAmount(struct User u, int option){
         if(strcmp(u.name, r.name) == 0 && r.accountNbr == accountID)  {
             found = 1;
             printf("Enter the amount to deposit: $");
-            scanf("%d", &amount);
+            scanf("%f", &amount);
             if (amount > 0){
                 if ((strcmp(r.accountType, "current") == 0 || strcmp(r.accountType, "saving") == 0)) {
                 r.amount += amount;
