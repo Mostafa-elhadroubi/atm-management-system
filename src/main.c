@@ -3,7 +3,7 @@
 void mainMenu(struct User u)
 {
     int option;
-    system("clear");
+    // system("clear");
     printf("\n\n\t\t======= ATM =======\n\n");
     printf("\n\t\t-->> Feel free to choose one of the options below <<--\n");
     printf("\n\t\t[1]- Create a new account\n");
@@ -27,6 +27,7 @@ void mainMenu(struct User u)
         // here
         break;
     case 3:
+        checkAccountInformation(u);
         // student TODO : add your **Check the details of existing accounts** function
         // here
         break;
@@ -70,6 +71,7 @@ void initMenu(struct User *u)
         {
         case 1:
             loginMenu(u->name, u->password);
+            // const char *storedPassword = ; 
             if (strcmp(u->password, getPassword(*u)) == 0)
             {
                 printf("\n\nPassword Match!");
@@ -85,9 +87,10 @@ void initMenu(struct User *u)
             registerMenu(u->name, u->password);
             if(!checkUserExist(u->name)) {
                 getName(u);
-                printf("\n\nRegisteration passed successfully");
+                printf("\n\n\t\tRegisteration passed successfully");
             }else {
-                printf("\nUser already exists!!!\n");
+                printf("\n\t\tUser already exists!!!\n");
+                exit(1);
             }
             r = 1;
             break;

@@ -44,7 +44,7 @@ const char *getPassword(struct User u)
         exit(1);
     }
 
-    while (fscanf(fp, "%s %s", userChecker.name, userChecker.password) != EOF)
+    while (fscanf(fp, "%d %s %s",&userChecker.id, userChecker.name, userChecker.password) != EOF)
     {
         if (strcmp(userChecker.name, u.name) == 0)
         {
@@ -88,13 +88,13 @@ void getName(struct User *u) {
     FILE *fp;
     struct User checkUser;
     //return afile pointer used to read from
-    if((fp = fopen("./data/users.txt", "r+"))== NULL) {
+    if((fp = fopen("./data/users.txt", "a+"))== NULL) {
         printf("Error! opening file");
         exit(1);
     }
     while(fscanf(fp, "%d %s %s", &checkUser.id, checkUser.name, checkUser.password) != EOF){
 
     }
-    fprintf(fp, "%d %s %s", checkUser.id + 1, u->name, u->password);
+    fprintf(fp, "%d %s %s\n", checkUser.id + 1, u->name, u->password);
     fclose(fp);
 }
