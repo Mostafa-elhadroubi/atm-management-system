@@ -314,3 +314,74 @@ void RemoveAccount(struct User u) {
     }
 
 }
+
+void withdrawAmount(struct User u, int option){
+    FILE *fp = fopen(RECORDS, "r");
+    FILE *fptemp = fopen("./data/tempFile.txt", "w");
+    struct Record r;
+    int accountID;
+    int amount;
+    int found = 0;
+    int invalid = 0;
+    printf("Enter your account ID to withdraw from:");
+    scanf("%d", &accountID);
+    while(getDataUserFromFile(fp, &r) != EOF) {
+        if(strcmp(u.name, r.name) == 0 && r.accountNbr == accountID)  {
+            found = 1;
+            printf("Enter the amount to withdraw: $");
+            scanf("%d", &amount);
+            if (r.amount >= amount){
+                if ((strcmp(r.accountType, "current") == 0 || strcmp(r.accountType, "saving") == 0)) {
+                r.amount -= amount;
+                saveUpdatedDataToFile(fptemp, u, r);
+                }else {
+                    invalid = 1;
+                    printf("Can not withdraw from this kind of account\n");
+                }
+            } else {
+                invalid = 1;
+                saveUpdatedDataToFile(fptemp, u, r);
+                printf("Invalid amount\n");
+            }
+        } else {
+            saveUpdatedDataToFile(fptemp, u, r);
+        }
+    }
+    fclose(fp);
+    fclose(fptemp);
+    remove(RECORDS);
+    rename("./data/tempFile.txt", RECORDS);
+    if(invalid){
+        success(u, "X Failed");
+    }
+    if (!found) {
+        printf("Account ID does not exist for this user!!!!\n");
+        success(u, "X Failed");
+    } else if(found && !invalid) {
+        success(u, "✔ Success");
+    }
+}
+
+void makeTransaction(struct User u) {
+    
+    int option;
+    while(1){
+        system("clear");
+        printf("\t\t =====Make Transaction======\n");
+        printf("Choose one of the following transaction:\n");
+        printf("\t\t[1] Withdraw\n");
+        printf("\t\t[2] Deposit\n");
+        scanf("%d", &option);
+        switch(option) {
+            case 1:
+                withdrawAmount(u, option);
+                break;
+            case 2:
+            //code
+            break;
+            default:
+            printf("Invalid option. Please choose 1 or 2.\n");
+            continue;
+        }
+    }
+}
