@@ -250,24 +250,8 @@ void checkAccountInformation(struct User u) {
     scanf("%d", &accountID);
     while(getDataUserFromFile(fp, &r) != EOF) {
         if(strcmp(r.name, u.name) == 0 && accountID == r.accountNbr) {
-            float interest;
             found = 1;
             accountInformation(r);
-            if(strcmp(r.accountType, "saving") == 0) {
-                interest = (r.amount * 7) / 1200;
-                printf("You will get $%.2lf as interest on day 10 of every month\n", interest);
-            } else if(strcmp(r.accountType, "fixed01") == 0) {
-                interest = (r.amount * 4) / 100;
-                printf("You will get $%.2lf of interest on %d/%d/%d\n", interest, r.deposit.month, r.deposit.day, r.deposit.year + 1);
-            } else if (strcmp(r.accountType, "fixed02") == 0)  {
-                interest = ((r.amount * 5) / 100) * 2;
-                printf("You will get $%.2lf of interest on %d/%d/%d\n", interest, r.deposit.month, r.deposit.day, r.deposit.year + 2);
-            } else if (strcmp(r.accountType, "fixed03") == 0) {
-                interest = ((r.amount * 8) / 100) * 3;
-                printf("You will get $%.2lf of interest on %d/%d/%d\n", interest, r.deposit.month, r.deposit.day, r.deposit.year + 3);
-            } else if (strcmp(r.accountType, "current") == 0) {
-                printf("You will not get interests because the account is of type current\n");
-            }
         }
     }
     fclose(fp);
@@ -283,6 +267,22 @@ void accountInformation(struct Record r) {
     printf("The date of the account is: %d/%d/%d\n", r.deposit.month, r.deposit.day, r.deposit.year);
     printf("The amount of the account is: %.2f\n", r.amount);
     printf("The accountType is: %s\n", r.accountType);
+    float interest;
+    if(strcmp(r.accountType, "saving") == 0) {
+                interest = (r.amount * 7) / 1200;
+                printf("You will get $%.2lf as interest on day 10 of every month\n", interest);
+            } else if(strcmp(r.accountType, "fixed01") == 0) {
+                interest = (r.amount * 4) / 100;
+                printf("You will get $%.2lf of interest on %d/%d/%d\n", interest, r.deposit.month, r.deposit.day, r.deposit.year + 1);
+            } else if (strcmp(r.accountType, "fixed02") == 0)  {
+                interest = ((r.amount * 5) / 100) * 2;
+                printf("You will get $%.2lf of interest on %d/%d/%d\n", interest, r.deposit.month, r.deposit.day, r.deposit.year + 2);
+            } else if (strcmp(r.accountType, "fixed03") == 0) {
+                interest = ((r.amount * 8) / 100) * 3;
+                printf("You will get $%.2lf of interest on %d/%d/%d\n", interest, r.deposit.month, r.deposit.day, r.deposit.year + 3);
+            } else if (strcmp(r.accountType, "current") == 0) {
+                printf("You will not get interests because the account is of type current\n");
+            }
 }
 
 void RemoveAccount(struct User u) {
@@ -431,3 +431,7 @@ void makeTransaction(struct User u) {
         }
     }
 }
+
+// void transferOwnerShip(struct User u) {
+
+// }
