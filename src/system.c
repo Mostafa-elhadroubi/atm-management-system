@@ -21,7 +21,7 @@ int getAccountFromFile(FILE *ptr, char name[50], struct Record *r)
 void saveAccountToFile(FILE *ptr, struct User u, struct Record r)
 {
     fprintf(ptr, "%d %d %s %d %d/%d/%d %s %d %.2lf %s\n\n",
-            r.id + 1,
+            r.id,
 	    r.userId,
 	    u.name,
             r.accountNbr,
@@ -129,7 +129,7 @@ noAccount:
     printf("\nChoose the type of account:\n\t-> saving\n\t-> current\n\t-> fixed01(for 1 year)\n\t-> fixed02(for 2 years)\n\t-> fixed03(for 3 years)\n\n\tEnter your choice:");
     scanf("%s", r.accountType);
     r.id = cr.id;
-    r.userId = cr.userId;
+    r.userId = cr.userId + 1;
     saveAccountToFile(pf, u, r);
 
     fclose(pf);
@@ -272,7 +272,7 @@ void checkAccountInformation(struct User u) {
     }
     fclose(fp);
     if(!found) {
-        printf("This account ID does not exist!!!");
+        printf("This account ID does not exist for this user!!!");
         success(u, "failed");
     } else {
         success(u, "✔ Success");
@@ -283,4 +283,34 @@ void accountInformation(struct Record r) {
     printf("The date of the account is: %d/%d/%d\n", r.deposit.month, r.deposit.day, r.deposit.year);
     printf("The amount of the account is: %.2f\n", r.amount);
     printf("The accountType is: %s\n", r.accountType);
+}
+
+void RemoveAccount(struct User u) {
+    FILE *fp = fopen(RECORDS, "r");
+    FILE *ftemp = fopen("./data/tempFile.txt", "w");
+    struct Record r;
+    int accountId;
+    system("clear");
+    printf("Enter the account ID you'd like to remove: ");
+    scanf("%d", &accountId);
+    int found = 0;
+    while(getDataUserFromFile( fp, &r) != EOF) {
+        if(strcmp(r.name, u.name) == 0 && r.accountNbr == accountId) {
+            found = 1;
+            continue;
+        }else {
+            saveAccountToFile(ftemp, u, r);
+        }
+    }
+    fclose(fp);
+    fclose(ftemp);
+    remove(RECORDS);
+    rename("./data/tempFile.txt", RECORDS);
+    if(!found){
+        printf("Account ID does not exist for this user!!");
+        success(u, "X Failed");
+    } else {
+        success(u, "✔ Success");
+    }
+
 }
