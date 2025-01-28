@@ -6,7 +6,7 @@
 
 3 0 Alice 1 1/28/2025 danmark 22222 1000.00 saving
 
-4 0 Alice 22 1/28/2024 dnmamrf 1111 990.00 saving
+4 0 Alice 22 1/28/2024 dnmamrf 1111 1000.00 saving
 
 6 0 Alice 3214 10/10/2012 UK 291231392 1001.20 fixed02
 
