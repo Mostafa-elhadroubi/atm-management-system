@@ -21,8 +21,8 @@ int getAccountFromFile(FILE *ptr, char name[50], struct Record *r)
 void saveAccountToFile(FILE *ptr, struct User u, struct Record r)
 {
     fprintf(ptr, "%d %d %s %d %d/%d/%d %s %d %.2lf %s\n\n",
-            r.id,
-	    u.id,
+            r.id + 1,
+	    r.userId,
 	    u.name,
             r.accountNbr,
             r.deposit.month,
@@ -76,7 +76,7 @@ void stayOrReturn(int notGood, void f(struct User u), struct User u)
 void success(struct User u, const char *res)
 {
     int option;
-    printf("\n✔ %s!\n\n", res);
+    printf("\n %s!\n\n", res);
 invalid:
     printf("Enter 1 to go to the main menu and 0 to exit!\n");
     scanf("%d", &option);
@@ -128,11 +128,12 @@ noAccount:
     scanf("%lf", &r.amount);
     printf("\nChoose the type of account:\n\t-> saving\n\t-> current\n\t-> fixed01(for 1 year)\n\t-> fixed02(for 2 years)\n\t-> fixed03(for 3 years)\n\n\tEnter your choice:");
     scanf("%s", r.accountType);
-
+    r.id = cr.id;
+    r.userId = cr.userId;
     saveAccountToFile(pf, u, r);
 
     fclose(pf);
-    success(u, "Success");
+    success(u, "✔ Success");
 }
 
 void checkAllAccounts(struct User u)
@@ -161,7 +162,7 @@ void checkAllAccounts(struct User u)
         }
     }
     fclose(pf);
-    success(u, "Success");
+    success(u, "✔ Success");
 }
 
 
@@ -223,9 +224,7 @@ void updateAccountInformation(struct User u) {
     if (!found) {
         system("clear");
         printf("Account does not exist!!\n");
-        success(u, "Failed");
-    } else {
-    success(u, "Success");
+        // success(u, "X Failed");
     }
 }
 
@@ -238,4 +237,50 @@ void saveUpdatedDataToFile(FILE *fp, struct User u, struct Record r) {
     fprintf(fp, "%d %d %s %d %d/%d/%d %s %d %.2lf %s\n\n",
     r.id, r.userId, u.name, r.accountNbr, r.deposit.month,
     r.deposit.day, r.deposit.year, r.country, r.phone, r.amount, r.accountType);
+}
+
+
+void checkAccountInformation(struct User u) {
+    struct Record r;
+    FILE *fp = fopen(RECORDS, "r");
+    int accountID;
+    int found = 0;
+    system("clear");
+    printf("\t\tEnter your account ID:");
+    scanf("%d", &accountID);
+    while(getDataUserFromFile(fp, &r) != EOF) {
+        if(strcmp(r.name, u.name) == 0 && accountID == r.accountNbr) {
+            float interest;
+            found = 1;
+            accountInformation(r);
+            if(strcmp(r.accountType, "saving") == 0) {
+                interest = (r.amount * 7) / 1200;
+                printf("You will get $%.2lf as interest on day 10 of every month\n", interest);
+            } else if(strcmp(r.accountType, "fixed01") == 0) {
+                interest = (r.amount * 4) / 100;
+                printf("You will get $%.2lf of interest on %d/%d/%d\n", interest, r.deposit.month, r.deposit.day, r.deposit.year + 1);
+            } else if (strcmp(r.accountType, "fixed02") == 0)  {
+                interest = ((r.amount * 5) / 100) * 2;
+                printf("You will get $%.2lf of interest on %d/%d/%d\n", interest, r.deposit.month, r.deposit.day, r.deposit.year + 2);
+            } else if (strcmp(r.accountType, "fixed03") == 0) {
+                interest = ((r.amount * 8) / 100) * 3;
+                printf("You will get $%.2lf of interest on %d/%d/%d\n", interest, r.deposit.month, r.deposit.day, r.deposit.year + 3);
+            } else if (strcmp(r.accountType, "current") == 0) {
+                printf("You will not get interests because the account is of type current\n");
+            }
+        }
+    }
+    fclose(fp);
+    if(!found) {
+        printf("This account ID does not exist!!!");
+        success(u, "failed");
+    } else {
+        success(u, "✔ Success");
+    }
+}
+
+void accountInformation(struct Record r) {
+    printf("The date of the account is: %d/%d/%d\n", r.deposit.month, r.deposit.day, r.deposit.year);
+    printf("The amount of the account is: %.2f\n", r.amount);
+    printf("The accountType is: %s\n", r.accountType);
 }
