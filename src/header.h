@@ -50,3 +50,5 @@ void accountInformation(struct Record r);
 void RemoveAccount(struct User u);
 
 void makeTransaction(struct User u);
+
+void transferOwnerShip(struct User u);

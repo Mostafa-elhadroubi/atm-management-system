@@ -7,7 +7,7 @@ int getAccountFromFile(FILE *ptr, char name[50], struct Record *r)
     return fscanf(ptr, "%d %d %s %d %d/%d/%d %s %d %lf %s",
                 &r->id,
                 &r->userId,
-                name,
+                r->name,
                 &r->accountNbr,
                 &r->deposit.month,
                 &r->deposit.day,
@@ -206,12 +206,8 @@ void updateAccountInformation(struct User u) {
                     printf("Insert a valid operation!\n");
                     goto invalidUpdate;
             }
-            // Write the updated record to the temp file
-            saveUpdatedDataToFile(tempFp, u, r);
-        } else {
-            // Write unchanged record to the temp file
-            saveUpdatedDataToFile(tempFp, u, r);
         }
+            saveUpdatedDataToFile(tempFp, u, r);
     }
 
 
@@ -225,6 +221,8 @@ void updateAccountInformation(struct User u) {
         system("clear");
         printf("Account does not exist!!\n");
         // success(u, "X Failed");
+    } else{
+        success(u, "✔ Success");
     }
 }
 
@@ -235,7 +233,7 @@ int getDataUserFromFile(FILE *fp, struct Record *r) {
 }
 void saveUpdatedDataToFile(FILE *fp, struct User u, struct Record r) {
     fprintf(fp, "%d %d %s %d %d/%d/%d %s %d %.2lf %s\n\n",
-    r.id, r.userId, u.name, r.accountNbr, r.deposit.month,
+    r.id, r.userId, r.name, r.accountNbr, r.deposit.month,
     r.deposit.day, r.deposit.year, r.country, r.phone, r.amount, r.accountType);
 }
 
@@ -432,6 +430,49 @@ void makeTransaction(struct User u) {
     }
 }
 
-// void transferOwnerShip(struct User u) {
 
-// }
+void transferOwnerShip(struct User u) {
+    FILE *fp = fopen(RECORDS, "r"); // Open for reading and writing
+    FILE *tempFp = fopen("./data/temp.txt", "w"); // Temporary file to write updated records
+    struct Record r;
+    int accountID;
+    char name[50];
+    char fname[50];
+    int found = 0;
+
+    if(fp == NULL || tempFp == NULL) {
+        printf("Error opening file.\n");
+        return;
+    }
+
+    system("clear");
+    printf("\t\t===== Transfer Ownership =====\n");
+    printf("Enter account ID to transfer: ");
+    scanf("%d", &accountID);
+    printf("Enter the user to transfer to: ");
+    scanf("%s", name);
+
+    while(getDataUserFromFile(fp, &r) != EOF) {
+
+        if(strcmp(u.name, r.name) == 0 && accountID == r.accountNbr) {
+            found = 1;
+            strcpy(r.name, name);
+        }
+
+        saveUpdatedDataToFile(tempFp, u, r);
+    }
+
+        fclose(fp);
+        fclose(tempFp);
+    if(found) {
+
+        remove(RECORDS); // Remove the old file
+        rename("./data/temp.txt", RECORDS); // Rename the temp file to the original file
+
+        printf("Ownership transferred successfully.\n");
+        success(u, "Success");
+    } else {
+        printf("This account does not exist or does not belong to you!\n");
+        success(u, "X Failed");
+    }
+}

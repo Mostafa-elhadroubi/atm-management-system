@@ -23,31 +23,21 @@ void mainMenu(struct User u)
         break;
     case 2:
         updateAccountInformation(u);
-        // student TODO : add your **Update account information** function
-        // here
         break;
     case 3:
         checkAccountInformation(u);
-        // student TODO : add your **Check the details of existing accounts** function
-        // here
         break;
     case 4:
         checkAllAccounts(u);
         break;
     case 5:
         makeTransaction(u);
-        // student TODO : add your **Make transaction** function
-        // here
         break;
     case 6:
         RemoveAccount(u);
-        // student TODO : add your **Remove existing account** function
-        // here
         break;
     case 7:
-        // transferOwnerShip(u);
-        // student TODO : add your **Transfer owner** function
-        // here
+        transferOwnerShip(u);
         break;
     case 8:
         exit(1);
@@ -74,7 +64,6 @@ void initMenu(struct User *u)
         {
         case 1:
             loginMenu(u->name, u->password);
-            // const char *storedPassword = ; 
             if (strcmp(u->password, getPassword(*u)) == 0)
             {
                 printf("\n\nPassword Match!");
