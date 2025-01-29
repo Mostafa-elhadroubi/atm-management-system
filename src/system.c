@@ -166,11 +166,27 @@ void checkAllAccounts(struct User u)
 }
 
 
+void resultData(FILE *fp, FILE *tempFp, struct User u, int found, int invalid){
+    fclose(fp);
+    fclose(tempFp);
+    remove(RECORDS);
+    rename("./data/tempFile.txt", RECORDS);
+    if(invalid){
+        success(u, "X Failed");
+    }
+    if (!found) {
+        printf("Account ID does not exist for this user!!!!\n");
+        success(u, "X Failed");
+    } else if(found && !invalid) {
+        success(u, "✔ Success");
+    }
+}
+
 void updateAccountInformation(struct User u) {
     struct Record r;
     int accountId;
-    FILE *fp = fopen(RECORDS, "r+");  // Open for reading and updating
-    FILE *tempFp = fopen("./data/tempfile.txt", "w+");  // Temp file for writing updated data
+    FILE *fp = fopen(RECORDS, "r");  // Open for reading and updating
+    FILE *tempFp = fopen("./data/tempFile.txt", "w");  // Temp file for writing updated data
 
     if (fp == NULL || tempFp == NULL) {
         printf("Error opening file.\n");
@@ -210,21 +226,10 @@ void updateAccountInformation(struct User u) {
             saveUpdatedDataToFile(tempFp, u, r);
     }
 
-
-    fclose(fp);
-    fclose(tempFp);
-
-    // Replace the original file with the updated temporary file
-    remove(RECORDS);  // Remove the original file
-    rename("./data/tempfile.txt", RECORDS);  // Rename temp file to original file name
-    if (!found) {
-        system("clear");
-        printf("Account does not exist!!\n");
-        // success(u, "X Failed");
-    } else{
-        success(u, "✔ Success");
-    }
+    resultData(fp, tempFp, u, found, 0);
 }
+
+
 
 int getDataUserFromFile(FILE *fp, struct Record *r) {
     return fscanf(fp, "%d %d %s %d %d/%d/%d %s %d %lf %s",
@@ -289,7 +294,7 @@ void RemoveAccount(struct User u) {
     struct Record r;
     int accountId;
     system("clear");
-    printf("Enter the account ID you'd like to remove: ");
+    printf("Enter the account ID to remove: ");
     scanf("%d", &accountId);
     int found = 0;
     while(getDataUserFromFile( fp, &r) != EOF) {
@@ -297,19 +302,10 @@ void RemoveAccount(struct User u) {
             found = 1;
             continue;
         }else {
-            saveAccountToFile(ftemp, u, r);
+            saveUpdatedDataToFile(ftemp, u, r);
         }
     }
-    fclose(fp);
-    fclose(ftemp);
-    remove(RECORDS);
-    rename("./data/tempFile.txt", RECORDS);
-    if(!found){
-        printf("Account ID does not exist for this user!!");
-        success(u, "X Failed");
-    } else {
-        success(u, "✔ Success");
-    }
+    resultData(fp, ftemp, u, found, 0);
 
 }
 
@@ -345,19 +341,7 @@ void withdrawAmount(struct User u, int option){
             saveUpdatedDataToFile(fptemp, u, r);
         }
     }
-    fclose(fp);
-    fclose(fptemp);
-    remove(RECORDS);
-    rename("./data/tempFile.txt", RECORDS);
-    if(invalid){
-        success(u, "X Failed");
-    }
-    if (!found) {
-        printf("Account ID does not exist for this user!!!!\n");
-        success(u, "X Failed");
-    } else if(found && !invalid) {
-        success(u, "✔ Success");
-    }
+    resultData(fp, fptemp, u, found, invalid);
 }
 
 void depositAmount(struct User u, int option){
@@ -392,19 +376,7 @@ void depositAmount(struct User u, int option){
             saveUpdatedDataToFile(fptemp, u, r);
         }
     }
-    fclose(fp);
-    fclose(fptemp);
-    remove(RECORDS);
-    rename("./data/tempFile.txt", RECORDS);
-    if(invalid){
-        success(u, "X Failed");
-    }
-    if (!found) {
-        printf("Account ID does not exist for this user!!!!\n");
-        success(u, "X Failed");
-    } else if(found && !invalid) {
-        success(u, "✔ Success");
-    }
+    resultData(fp, fptemp, u, found, invalid);
 }
 void makeTransaction(struct User u) {
     
@@ -433,7 +405,7 @@ void makeTransaction(struct User u) {
 
 void transferOwnerShip(struct User u) {
     FILE *fp = fopen(RECORDS, "r"); // Open for reading and writing
-    FILE *tempFp = fopen("./data/temp.txt", "w"); // Temporary file to write updated records
+    FILE *tempFp = fopen("./data/tempFile.txt", "w"); // Temporary file to write updated records
     struct Record r;
     int accountID;
     char name[50];
@@ -461,18 +433,5 @@ void transferOwnerShip(struct User u) {
 
         saveUpdatedDataToFile(tempFp, u, r);
     }
-
-        fclose(fp);
-        fclose(tempFp);
-    if(found) {
-
-        remove(RECORDS); // Remove the old file
-        rename("./data/temp.txt", RECORDS); // Rename the temp file to the original file
-
-        printf("Ownership transferred successfully.\n");
-        success(u, "Success");
-    } else {
-        printf("This account does not exist or does not belong to you!\n");
-        success(u, "X Failed");
-    }
+resultData(fp, tempFp, u, found, 0);
 }
