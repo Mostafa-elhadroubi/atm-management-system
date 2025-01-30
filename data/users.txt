@@ -1,5 +1,3 @@
 0 Alice q1w2e3r4t5y6
 1 Michel q1w2e3r4t5y6
-2 mostafa 1234333
-3 Marcus q1w2e3r4t5y64
-4 soufiane qwerty
+2 Marcus q1w2e3r4t5y6
