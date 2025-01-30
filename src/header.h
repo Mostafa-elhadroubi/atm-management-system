@@ -40,6 +40,11 @@ void checkAllAccounts(struct User u);
 int checkUserExist(char a[50]);
 void getName(struct User *u);
 
+void success(struct User u, const char *res);
+void resultData(FILE *fp, FILE *tempFp, struct User u, int found, int invalid);
+// void saveUpdatedDataToFile(FILE *fp, struct User u, struct Record r);
+// int getDataUserFromFile(FILE *fp, struct Record *r);
+
 void updateAccountInformation(struct User u);
 int getDataUserFromFile(FILE *fp, struct Record *r);
 void saveUpdatedDataToFile(FILE *fp, struct User u, struct Record r);
@@ -49,6 +54,7 @@ void accountInformation(struct Record r);
 
 void RemoveAccount(struct User u);
 
+void withdrawAmount(struct User u, int option);
 void makeTransaction(struct User u);
 
 void transferOwnerShip(struct User u);
