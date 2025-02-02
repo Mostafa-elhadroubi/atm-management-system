@@ -51,8 +51,7 @@ void updateAccountInformation(struct User u) {
             found = 1;
             int option;
             invalidUpdate:
-            system("clear");
-            printf("\t\t\tWhat do you want to change:\n\n");
+            printf("\t\t\tWhat would like to change:\n\n");
             printf("\n\t\t[1]- Phone Number\n");
             printf("\n\t\t[2]- Country\n");
             scanf("%d", &option);
@@ -66,7 +65,8 @@ void updateAccountInformation(struct User u) {
                     scanf("%s", r.country);
                     break;
                 default:
-                    printf("Insert a valid operation!\n");
+                    system("clear");
+                    printf("Insert a valid operation!!!\n");
                     goto invalidUpdate;
             }
         }
@@ -103,6 +103,10 @@ void checkAccountInformation(struct User u) {
     FILE *fp = fopen(RECORDS2, "r");
     int accountID;
     int found = 0;
+    if(fp == NULL) {
+        printf("Error opening file.\n");
+        return;
+    }
     system("clear");
     printf("\t\tEnter your account ID:");
     scanf("%d", &accountID);
@@ -126,6 +130,10 @@ void RemoveAccount(struct User u) {
     FILE *ftemp = fopen("./data/tempFile.txt", "w");
     struct Record r;
     int accountId;
+    if(fp == NULL || ftemp == NULL) {
+        printf("Error opening file.\n");
+        return;
+    }
     system("clear");
     printf("Enter the account ID to remove: ");
     scanf("%d", &accountId);
@@ -146,25 +154,21 @@ void withdrawAmount(struct User u, int accountID){
     FILE *fp = fopen(RECORDS2, "r");
     FILE *fptemp = fopen("./data/tempFile.txt", "w");
     struct Record r;
-    // int accountID;
     float amount;
     int found = 0;
     int invalid = 0;
-    // printf("Enter your account ID to withdraw from:");
-    // scanf("%d", &accountID);
+    if(fp == NULL || fptemp == NULL) {
+        printf("Error opening file.\n");
+        return;
+    }
     while(getDataUserFromFile(fp, &r) != EOF) {
         if(strcmp(u.name, r.name) == 0 && r.accountNbr == accountID)  {
             found = 1;
             printf("Enter the amount to withdraw: $");
             scanf("%f", &amount);
             if (r.amount >= amount){
-                // if ((strcmp(r.accountType, "current") == 0 || strcmp(r.accountType, "saving") == 0)) {
                 r.amount -= amount;
                 saveUpdatedDataToFile(fptemp, u, r);
-                // }else {
-                //     invalid = 1;
-                //     printf("Can not withdraw from this kind of account\n");
-                // }
             } else {
                 invalid = 1;
                 saveUpdatedDataToFile(fptemp, u, r);
@@ -181,25 +185,22 @@ void depositAmount(struct User u, int accountID){
     FILE *fp = fopen(RECORDS2, "r");
     FILE *fptemp = fopen("./data/tempFile.txt", "w");
     struct Record r;
-    // int accountID;
     float amount;
     int found = 0;
     int invalid = 0;
-    // printf("Enter your account ID to deposit into:");
-    // scanf("%d", &accountID);
+
+    if(fp == NULL || fptemp == NULL) {
+        printf("Error opening file.\n");
+        return;
+    }
     while(getDataUserFromFile(fp, &r) != EOF) {
         if(strcmp(u.name, r.name) == 0 && r.accountNbr == accountID)  {
             found = 1;
             printf("Enter the amount to deposit: $");
             scanf("%f", &amount);
             if (amount > 0){
-                // if ((strcmp(r.accountType, "current") == 0 || strcmp(r.accountType, "saving") == 0)) {
                 r.amount += amount;
                 saveUpdatedDataToFile(fptemp, u, r);
-                // }else {
-                //     invalid = 1;
-                //     printf("Can not withdraw from this kind of account\n");
-                // }
             } else {
                 invalid = 1;
                 saveUpdatedDataToFile(fptemp, u, r);
@@ -215,6 +216,10 @@ void depositAmount(struct User u, int accountID){
 int checkAccountType(struct User u, int ID) {
     FILE *fp = fopen(RECORDS2, "r");
     struct Record r;
+    if(fp == NULL) {
+        printf("Error opening file.\n");
+        return 0;
+    }
     while(getDataUserFromFile(fp, &r) != EOF)  {
         if(strcmp(u.name, r.name) == 0 && ID == r.accountNbr && ((strcmp(r.accountType, "saving") == 0) || (strcmp(r.accountType, "current") == 0))) {
             return 1;
@@ -232,7 +237,6 @@ void makeTransaction(struct User u) {
         scanf("%d", &accountID);
         if(checkAccountType(u, accountID)){
         while(1){
-            system("clear");
             printf("Choose one of the following transaction:\n");
             printf("\t\t[1] Withdraw\n");
             printf("\t\t[2] Deposit\n");
@@ -245,7 +249,8 @@ void makeTransaction(struct User u) {
                     depositAmount(u, accountID);
                 break;
                 default:
-                printf("Invalid option. Please choose 1 or 2.\n");
+                system("clear");
+                printf("Invalid option!!!\n");
                 continue;
             }
         } 

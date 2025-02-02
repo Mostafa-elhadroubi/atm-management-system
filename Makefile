@@ -1,4 +1,4 @@
-objects = src/main.o src/system.o src/auth.o src/system2.c
+objects = src/main.o src/system.o src/auth.o src/system2.o
 
 atm : $(objects)
 	cc -o atm $(objects)

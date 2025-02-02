@@ -126,8 +126,12 @@ noAccount:
     scanf("%d", &r.phone);
     printf("\nEnter amount to deposit: $");
     scanf("%lf", &r.amount);
+    tryAgain:
     printf("\nChoose the type of account:\n\t-> saving\n\t-> current\n\t-> fixed01(for 1 year)\n\t-> fixed02(for 2 years)\n\t-> fixed03(for 3 years)\n\n\tEnter your choice:");
     scanf("%s", r.accountType);
+    if (strcmp(r.accountType, "saving") != 0 && strcmp(r.accountType, "current") != 0 && strcmp(r.accountType, "fixed01") != 0 && strcmp(r.accountType, "fixed02") != 0 && strcmp(r.accountType, "fixed03") != 0) {
+        goto tryAgain;
+    }
     r.id = cr.id;
     r.userId = cr.userId + 1;
     saveAccountToFile(pf, u, r);
