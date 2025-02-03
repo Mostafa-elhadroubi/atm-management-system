@@ -7,7 +7,7 @@ int getAccountFromFile(FILE *ptr, char name[50], struct Record *r)
     return fscanf(ptr, "%d %d %s %d %d/%d/%d %s %d %lf %s",
                 &r->id,
                 &r->userId,
-                r->name,
+                name,
                 &r->accountNbr,
                 &r->deposit.month,
                 &r->deposit.day,
@@ -103,8 +103,8 @@ void createNewAcc(struct User u)
     char userName[50];
     FILE *pf = fopen(RECORDS, "r+");
 
-noAccount:
     system("clear");
+    noAccount:
     printf("\t\t\t===== New record =====\n");
 
     printf("\nEnter today's date(mm/dd/yyyy):");
@@ -116,6 +116,7 @@ noAccount:
     {
         if (strcmp(userName, u.name) == 0 && cr.accountNbr == r.accountNbr)
         {
+            system("clear");
             printf("✖ This Account already exists for this user\n\n");
             goto noAccount;
         }
@@ -130,6 +131,7 @@ noAccount:
     printf("\nChoose the type of account:\n\t-> saving\n\t-> current\n\t-> fixed01(for 1 year)\n\t-> fixed02(for 2 years)\n\t-> fixed03(for 3 years)\n\n\tEnter your choice:");
     scanf("%s", r.accountType);
     if (strcmp(r.accountType, "saving") != 0 && strcmp(r.accountType, "current") != 0 && strcmp(r.accountType, "fixed01") != 0 && strcmp(r.accountType, "fixed02") != 0 && strcmp(r.accountType, "fixed03") != 0) {
+        printf("Incorrect type account!!!\n");
         goto tryAgain;
     }
     r.id = cr.id;
