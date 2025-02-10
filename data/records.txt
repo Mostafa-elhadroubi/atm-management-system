@@ -4,9 +4,3 @@
 
 2 1 Michel 123 10/10/2020 UK 1234123 12345.30 saving
 
-2 2 Alice 1 10/10/2025 Espagne 222222 1000.00 saving
-
-2 3 Alice 2 12/2/2024 France 654321 100.00 saving
-
-2 7 Michel 3212 10/10/2012 UK 291231392 1001.20 fixed03
-
